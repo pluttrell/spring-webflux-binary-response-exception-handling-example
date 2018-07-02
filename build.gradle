@@ -38,3 +38,7 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.10.0'
     testCompile 'io.projectreactor:reactor-test'
 }
+
+test {
+    useJUnitPlatform()
+}
