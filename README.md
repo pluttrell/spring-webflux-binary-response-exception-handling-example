@@ -58,7 +58,7 @@ class BinaryTestController {
 ```
 
 The `AccessKeyValidationService` does a blocking lookup, so naturally needs to return a `Mono` and thus needs to be part of the `Mono` returned from the controller:
-```
+```java
 @Service
 class AccessKeyValidationService {
 
@@ -75,7 +75,7 @@ class AccessKeyValidationService {
 ```
 
 A valid apiKey, results in proper binary output:
-```
+```bash
 $ http localhost:8080/binary-test apiKey==good
 HTTP/1.1 200 OK
 Content-Length: 4
@@ -85,7 +85,7 @@ test
 ```
 
 When the exception is thrown before the Reactive Stream, the intended JSON output is returned:
-```
+```bash
 $ http localhost:8080/binary-test apiKey==good failFirst==true
 HTTP/1.1 400 Bad Request
 Content-Length: 44
@@ -97,7 +97,7 @@ Content-Type: application/json;charset=UTF-8
 ```
 
 But when the stream receives an `IllegalAccessException` error a `406` is returned instead of the defined error handling:
-```
+```bash
 $ http localhost:8080/binary-test apiKey==bad
 HTTP/1.1 406 Not Acceptable
 Content-Length: 157
