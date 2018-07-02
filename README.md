@@ -1,9 +1,19 @@
 # spring-webflux-binary-response-exception-handling-example
 
-This repo provides an example with failing unit test of 
+This repo provides an example (with a failing unit test) of `406` errors returned when both of the following occur:
 
+1. Exceptions are returned from the the Reactive stream instead of the controller method itself.
+1. When the controller method produces a different ContentType then the `ExceptionHandler`.
 
-Using Spring Webflux included with SpringBoot v2.0.3 and v2.1.0-BUILD-SNAPSHOT I'm seeing `406` errors if Exceptions are thrown out of the Reactive stream vs the controller method itself when the controller method produces a different ContentType then the `ExceptionHandler`.
+This is reproducible using SpringBoot v2.0.3 and v2.1.0-BUILD-SNAPSHOT (as of 7/1/2018).
+
+### Run with
+
+```bash
+./gradlew test
+```
+
+### Details
 
 Here's the controller:
 
@@ -74,7 +84,7 @@ Content-Type: application/octet-stream
 test
 ```
 
-When I throw an exception before the Reactive Stream, I get the intended JSON output:
+When the exception is thrown before the Reactive Stream, the intended JSON output is returned:
 ```
 $ http localhost:8080/binary-test apiKey==good failFirst==true
 HTTP/1.1 400 Bad Request
@@ -86,7 +96,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-But when I trigger the steam to error with an `IllegalAccessException`, I get a `406`:
+But when the stream receives an `IllegalAccessException` error a `406` is returned instead of the defined error handling:
 ```
 $ http localhost:8080/binary-test apiKey==bad
 HTTP/1.1 406 Not Acceptable
